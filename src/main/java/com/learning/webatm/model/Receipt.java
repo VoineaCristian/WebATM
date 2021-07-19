@@ -1,14 +1,9 @@
 package com.learning.webatm.model;
 
-import com.learning.webatm.Bank;
 import com.learning.webatm.enums.MoneyType;
 import com.learning.webatm.enums.TransactionType;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.TreeMap;
-import java.util.stream.Collectors;
 
 public class Receipt {
 

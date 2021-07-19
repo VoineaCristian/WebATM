@@ -8,6 +8,7 @@ public enum MoneyType {
     LEU_5(5, 100),
     LEU_1(1, 100);
 
+
     private final int value;
     private final int initialCount;
 

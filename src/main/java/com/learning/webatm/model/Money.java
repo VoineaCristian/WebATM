@@ -2,39 +2,68 @@ package com.learning.webatm.model;
 
 import com.learning.webatm.enums.Currency;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Money {
 
-    private Currency currency;
-    private List<Bill> bills;
+   private Long id;
+   private Currency type;
+   private List<Stacks> stacks;
 
-    public Money(Currency currency, List<Bill> bills) {
-        this.currency = currency;
-        this.bills = bills;
+
+    public Money() {
+
+    }
+    public Money(Currency type, List<Stacks> stacks) {
+        this.type = type;
+        this.stacks = stacks;
     }
 
-    public Currency getCurrency() {
-        return currency;
+    public Long getId() {
+        return id;
     }
 
-    public void setCurrency(Currency currency) {
-        this.currency = currency;
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    public List<Bill> getBills() {
-        return bills;
+    public List<Stacks> getStacks() {
+        return stacks;
     }
 
-    public void setBills(List<Bill> bills) {
-        this.bills = bills;
+    public void setStacks(List<Stacks> stacks) {
+        this.stacks = stacks;
     }
 
-    @Override
-    public String toString() {
-        return "Money{" +
-                "currency=" + currency +
-                ", bills=" + bills +
-                '}';
+    public Currency getType() {
+        return type;
+    }
+
+    public void setType(Currency type) {
+        this.type = type;
+    }
+
+    public Stacks getStackByValue(Stacks s){
+        return this.getStacks().stream()
+                        .filter(stack->stack.getNotes().getValue()==s.getNotes().getValue())
+                        .findFirst()
+                        .orElse(null);
+    }
+
+    public void fill(Stacks s){
+        Stacks existingStacks = this.getStackByValue(s);
+        System.out.println(existingStacks);
+        if(existingStacks == null){
+            this.stacks.add(s);
+        } else {
+            int actualCount = existingStacks.getCount();
+            existingStacks.setCount(actualCount+s.getCount());
+        }
+    }
+
+    public void addStacks(List<Stacks> stacksList) {
+
+        stacksList.forEach(this::fill);
     }
 }

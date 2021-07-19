@@ -1,18 +1,18 @@
 package com.learning.webatm;
 
+import com.learning.webatm.enums.Currency;
 import com.learning.webatm.enums.MoneyType;
 import com.learning.webatm.exception.NotEnoughMoney;
 import com.learning.webatm.exception.NotEnoughPennies;
 import com.learning.webatm.exception.RunOutOfMoney;
+import com.learning.webatm.model.Bank;
 import com.learning.webatm.model.Message;
+import com.learning.webatm.model.Money;
 import com.learning.webatm.model.Receipt;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Map;
 import java.util.TreeMap;
 import java.util.logging.Logger;
 
@@ -23,45 +23,30 @@ public class ATM {
     private Bank bank;
 
 
-    public Receipt withDraw(int amount)  {
+//    public  withDraw(int amount, Currency currency)  {
+//
+//
+//    }
 
-        Logger logger =  Logger.getLogger(ATM.class.getName());
-        Receipt receipt = null;
+    public Money refill(Money money) {
 
-        try {
-            bank.getBalance();
-            receipt = this.bank.getAmountOf(amount);
-        } catch (NotEnoughMoney NEM){
-            logger.warning(NEM.getMessage());
-        }catch (NotEnoughPennies NEP){
-            logger.warning(NEP.getMessage());
-        }catch (RunOutOfMoney ROOF){
-            logger.warning(ROOF.getMessage());
-        }
-        this.sendMessages();
-
-        return receipt;
-    }
-
-    public Receipt refill(TreeMap<MoneyType, Integer> map) {
-
-        return this.bank.refill(map);
+        return this.bank.refill(money);
 
     }
 
     public void sendMessages(){
-
-        List<Message> messages = this.bank.getMailbox();
-
-        if(!messages.isEmpty()) {
-            messages.forEach(message -> System.out.println(message));
-            this.bank.cleanMailbox();
-        }
+//
+//        List<Message> messages = this.bank.getMailbox();
+//
+//        if(!messages.isEmpty()) {
+//            messages.forEach(message -> System.out.println(message));
+//            this.bank.cleanMailbox();
+//        }
     }
 
-    public Receipt getBankBalance(){
-        return this.bank.getBalance();
-    }
+//    public Receipt getBankBalance(){
+//        return this.bank.getBalance();
+//    }
 
     @Override
     public String toString() {

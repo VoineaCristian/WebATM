@@ -1,7 +1,6 @@
 package com.learning.webatm.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.learning.webatm.Bank;
 import com.learning.webatm.enums.TransactionType;
 
 import java.util.ArrayList;
