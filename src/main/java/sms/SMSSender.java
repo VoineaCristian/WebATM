@@ -1,9 +1,7 @@
 package sms;
 
 import com.learning.webatm.model.SMS;
-import org.springframework.stereotype.Component;
 
-@Component
 public class SMSSender {
 
     private SMS sms;

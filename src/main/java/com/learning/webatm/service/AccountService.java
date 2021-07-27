@@ -9,4 +9,5 @@ public interface AccountService {
 
     Account findAccountById(Long id);
     List<Account> findAccountsByOwner(User user);
+    Account save(Account account);
 }

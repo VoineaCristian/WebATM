@@ -1,43 +1,36 @@
 package com.learning.webatm.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.learning.webatm.enums.Currency;
 import com.learning.webatm.enums.TransactionType;
 
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@Entity
+@Table(name="account")
 public class Account {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
+    @Column(name = "sold")
     int sold;
-    List<Receipt> transactionHistory;
-    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name = "user_id")
     User owner;
+    @Column(name = "currency")
+    @Enumerated(EnumType.STRING)
+    Currency currency;
 
-    public Account(Long id, Integer sold, List<Receipt> transations, User user) {
+    public Account(){}
+
+    public Account(Long id, int sold, User owner, Currency currency) {
         this.id = id;
         this.sold = sold;
-        if(transations == null)
-            transactionHistory = new ArrayList<>();
-        else this.transactionHistory = transations;
-        this.owner = user;
-    }
-
-
-    public List<Receipt> getTransactionHistory() {
-        return transactionHistory;
-    }
-
-    public void setTransactionHistory(List<Receipt> transactionHistory) {
-        this.transactionHistory = transactionHistory;
-    }
-
-    public User getOwner() {
-        return owner;
-    }
-
-    public void setOwner(User owner) {
         this.owner = owner;
+        this.currency = currency;
     }
 
     public Long getId() {
@@ -48,31 +41,28 @@ public class Account {
         this.id = id;
     }
 
-    public Integer getSold() {
+    public int getSold() {
         return sold;
     }
 
-    public void setSold(Integer sold) {
+    public void setSold(int sold) {
         this.sold = sold;
     }
 
-    public boolean enoughSold(int value){
-        return value <= this.sold;
+    public User getOwner() {
+        return owner;
     }
 
-    public boolean isMyOwner(User user){
-        return this.owner == user;
+    public void setOwner(User owner) {
+        this.owner = owner;
     }
 
-    public Integer deposit(Receipt receipe){
-
-        Integer amount  = receipe.getReceiptTotalAmount();
-        this.sold += amount;
-        return amount;
+    public Currency getCurrency() {
+        return currency;
     }
 
-    public void addNewTransaction(Receipt receipt){
-        this.transactionHistory.add(receipt);
+    public void setCurrency(Currency currency) {
+        this.currency = currency;
     }
 
     @Override
@@ -80,7 +70,7 @@ public class Account {
         return "Account{" +
                 "id=" + id +
                 ", sold=" + sold +
-                ", transactionHistory=" + transactionHistory +
+                ", transactionHistory="  +
                 '}';
     }
 

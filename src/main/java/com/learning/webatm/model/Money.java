@@ -2,22 +2,51 @@ package com.learning.webatm.model;
 
 import com.learning.webatm.enums.Currency;
 
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+
+@Entity
 public class Money {
 
-   private Long id;
-   private Currency type;
-   private List<Stacks> stacks;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
 
+    @Column(unique = true)
+    @Enumerated(EnumType.STRING)
+    private Currency currency;
+
+    @OneToMany(cascade = {CascadeType.ALL})
+    private List<Stacks> stacks;
 
     public Money() {
 
     }
-    public Money(Currency type, List<Stacks> stacks) {
-        this.type = type;
+
+
+    public Money(Currency currency, List<Stacks> stacks) {
+        this.currency = currency;
         this.stacks = stacks;
+    }
+
+    public Money(Currency currency) {
+        this.currency = currency;
+    }
+
+    public Money(Long id, Currency currency, List<Stacks> stacks) {
+        this.id = id;
+        this.currency = currency;
+        this.stacks = stacks;
+    }
+
+    public Currency getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(Currency currency) {
+        this.currency = currency;
     }
 
     public Long getId() {
@@ -36,17 +65,12 @@ public class Money {
         this.stacks = stacks;
     }
 
-    public Currency getType() {
-        return type;
-    }
 
-    public void setType(Currency type) {
-        this.type = type;
-    }
 
     public Stacks getStackByValue(Stacks s){
+        System.out.println("----" + s.getNotes().getValue());
         return this.getStacks().stream()
-                        .filter(stack->stack.getNotes().getValue()==s.getNotes().getValue())
+                        .filter(stack->stack.getNotes().getType()==s.getNotes().getType())
                         .findFirst()
                         .orElse(null);
     }
@@ -65,5 +89,22 @@ public class Money {
     public void addStacks(List<Stacks> stacksList) {
 
         stacksList.forEach(this::fill);
+    }
+
+    public Integer getTotalAmount(){
+        int sum = 0;
+        sum = this.stacks.stream()
+                         .mapToInt(Stacks::totalAmount)
+                         .sum();
+        return sum;
+    }
+
+    @Override
+    public String toString() {
+        return "Money{" +
+                "id=" + id +
+                ", currency=" + currency +
+                ", stacks=" + stacks +
+                '}';
     }
 }

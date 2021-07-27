@@ -3,43 +3,35 @@ package com.learning.webatm.model;
 
 
 import com.learning.webatm.enums.MoneyType;
-import com.learning.webatm.enums.TransactionType;
-import com.learning.webatm.exception.NotEnoughMoney;
-import com.learning.webatm.exception.NotEnoughPennies;
-import com.learning.webatm.exception.RunOutOfMoney;
-import com.learning.webatm.factory.MessageFactory;
-import com.learning.webatm.model.Message;
-import com.learning.webatm.model.Money;
-import com.learning.webatm.model.Receipt;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-
-@Component
-public class Bank {
-
-
-    private Integer availableAmount;
-    private Drawer drawer;
-
-
-    public Money getAmountOf(Integer amount, Currency type){
-        return new Money();
-    }
-
-    public Bank(){
-
-        this.drawer = new Drawer();
-        this.availableAmount = 0;
-    }
-
-    public static int getMoneyEntryValue(Map.Entry<MoneyType, Integer> moneyTypeIntegerEntry) {
-        return 0;
-    }
 //
+//@Service
+//public class Bank {
+//
+//
+//    private Integer availableAmount;
+//    private Drawer drawer;
+//
+//
+//    public Money getAmountOf(Integer amount, Currency type){
+//        return new Money();
+//    }
+//
+//    public Bank(){
+//
+//        this.drawer = new Drawer();
+//        this.availableAmount = 0;
+//    }
+//
+//    public static int getMoneyEntryValue(Map.Entry<MoneyType, Integer> moneyTypeIntegerEntry) {
+//        return 0;
+//    }
+////
 //    public Receipt getAmountOf(Integer amount, Currency type) throws NotEnoughPennies, NotEnoughMoney, RunOutOfMoney {
 //
 //
@@ -90,13 +82,7 @@ public class Bank {
 //        return new Receipt(dueMoney, TransactionType.TRANSACTION_WITHDRAW);
 //    }
 //
-    public Money refill(Money money){
 
-        this.drawer.addMoney(money.getType(), money.getStacks());
-
-        return drawer.getMoneyListByType(money.getType());
-
-    }
 //
 //
 //    public boolean validAmount(int amount){
@@ -133,4 +119,4 @@ public class Bank {
 //
 
 
-}
+//}

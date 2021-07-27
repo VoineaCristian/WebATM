@@ -22,13 +22,13 @@ public class Receipt {
         this.transactionType = type;
     }
 
-    public Integer getReceiptTotalAmount(){
-        return this.getMoneyMap()
-                    .entrySet()
-                    .stream()
-                    .mapToInt(Bank::getMoneyEntryValue)
-                    .sum();
-        }
+//    public Integer getReceiptTotalAmount(){
+//        return this.getMoneyMap()
+//                    .entrySet()
+//                    .stream()
+//                    .mapToInt(Bank::getMoneyEntryValue)
+//                    .sum();
+//        }
 
 
     public TreeMap<MoneyType, Integer> getMoneyMap() {

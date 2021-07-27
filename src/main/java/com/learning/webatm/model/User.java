@@ -1,43 +1,42 @@
 package com.learning.webatm.model;
 
+
 import com.learning.webatm.enums.UserRole;
 
+import javax.persistence.*;
 import java.util.List;
 
-
+@Entity
+@Table(name="user")
 public class User {
 
-    private Long Id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    @Column(name = "username", unique = true)
     private String username;
+    @Column(name="role")
+    @Enumerated(EnumType.STRING)
     private UserRole role;
-    private List<Account> accounts;
+    @Column(name="phone_number", unique = true)
     private String phoneNumber;
 
     public User() {
     }
 
-    public User(Long id, String username, List<Account> accounts, UserRole role, String phoneNumber) {
-        Id = id;
+    public User(Long id, String username, UserRole role, String phoneNumber) {
+        this.id = id;
         this.username = username;
-        this.accounts = accounts;
         this.role = role;
         this.phoneNumber = phoneNumber;
     }
 
     public Long getId() {
-        return Id;
+        return id;
     }
 
     public void setId(Long id) {
-        Id = id;
-    }
-
-    public List<Account> getAccounts() {
-        return accounts;
-    }
-
-    public void setAccounts(List<Account> accounts) {
-        this.accounts = accounts;
+        id = id;
     }
 
     public String getUsername() {
@@ -56,6 +55,14 @@ public class User {
         this.role = role;
     }
 
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
     public boolean isAdmin(){
         return this.getRole() == UserRole.ROLE_ADMIN;
     }
@@ -63,10 +70,10 @@ public class User {
     @Override
     public String toString() {
         return "User{" +
-                "Id=" + Id +
+                "Id=" + id +
                 ", username='" + username + '\'' +
                 ", role=" + role +
-                ", accounts=" + accounts +
+                ", accounts=" +
                 '}';
     }
 }

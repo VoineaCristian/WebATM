@@ -1,17 +1,27 @@
 package com.learning.webatm.model;
 
 import com.learning.webatm.enums.Currency;
-import org.springframework.util.comparator.ComparableComparator;
+import org.hibernate.annotations.DynamicUpdate;
 
+import javax.persistence.*;
+
+@Entity
 public class Stacks implements Comparable<Stacks> {
 
-
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+    @ManyToOne(cascade = {CascadeType.ALL})
+    @JoinColumn(name = "notes_id")
     private Notes notes;
+    @Column(name = "count")
     private Integer count;
 
 
-    public Stacks(Notes note, Integer count) {
+    public Stacks() {
+    }
+
+    public Stacks(Notes notes, Integer count) {
         this.notes = notes;
         this.count = count;
     }
@@ -43,17 +53,14 @@ public class Stacks implements Comparable<Stacks> {
 
     @Override
     public int compareTo(Stacks s) {
-        return this.notes.value-s.notes.value;
+        return this.notes.getValue()-s.notes.getValue();
+    }
+
+    public int totalAmount(){
+        return this.count * this.getNotes().getValue();
     }
 
 
-    @Override
-    public String toString() {
-        return "Bill{" +
-                ", value=" +
-                ", count=" + count +
-                '}';
-    }
 
 
 }

@@ -5,7 +5,7 @@ import com.learning.webatm.enums.MoneyType;
 import com.learning.webatm.exception.NotEnoughMoney;
 import com.learning.webatm.exception.NotEnoughPennies;
 import com.learning.webatm.exception.RunOutOfMoney;
-import com.learning.webatm.model.Bank;
+import com.learning.webatm.model.Drawer;
 import com.learning.webatm.model.Message;
 import com.learning.webatm.model.Money;
 import com.learning.webatm.model.Receipt;
@@ -19,18 +19,13 @@ import java.util.logging.Logger;
 @Component
 public class ATM {
 
-    @Autowired
-    private Bank bank;
+    Drawer drawer;
 
+    public Money refill(Money money){
 
-//    public  withDraw(int amount, Currency currency)  {
-//
-//
-//    }
+        this.drawer.addMoney(money.getCurrency(), money.getStacks());
 
-    public Money refill(Money money) {
-
-        return this.bank.refill(money);
+        return drawer.getMoneyListByType(money.getCurrency());
 
     }
 
@@ -48,20 +43,7 @@ public class ATM {
 //        return this.bank.getBalance();
 //    }
 
-    @Override
-    public String toString() {
-        return "ATM{" +
-                "bank=" + bank +
-                '}';
-    }
 
-    public Bank getBank() {
-        return bank;
-    }
-
-    public void setBank(Bank bank) {
-        this.bank = bank;
-    }
 
 
 }
