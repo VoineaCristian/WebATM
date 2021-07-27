@@ -4,13 +4,15 @@ package com.learning.webatm.controller;
  import com.learning.webatm.container.AccountContainer;
  import com.learning.webatm.dto.AccountDTO;
  import com.learning.webatm.dto.MoneyDTO;
- import com.learning.webatm.enums.MoneyType;
-import com.learning.webatm.enums.TransactionType;
-import com.learning.webatm.enums.UserRole;
+ import com.learning.webatm.enums.*;
+ import com.learning.webatm.exception.NotEnoughMoney;
+ import com.learning.webatm.exception.NotEnoughPennies;
+ import com.learning.webatm.exception.RunOutOfMoney;
  import com.learning.webatm.model.*;
 
  import com.learning.webatm.service.AccountService;
  import com.learning.webatm.service.DrawerService;
+ import com.learning.webatm.service.NotesService;
  import com.learning.webatm.service.UserService;
  import org.modelmapper.ModelMapper;
  import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +34,10 @@ public class UserATMController {
 
     @Autowired
     DrawerService drawerService;
+
+    @Autowired
+    NotesService notesService;
+
     ModelMapper modelMapper = new ModelMapper();
 
 
@@ -56,7 +62,7 @@ public class UserATMController {
 
         AccountDTO accountDTO = modelMapper.map(account, AccountDTO.class);
 
-        return ResponseEntity.status(HttpStatus.OK).body(account);
+        return ResponseEntity.status(HttpStatus.OK).body(accountDTO);
     }
 
     @GetMapping("/accounts")
@@ -75,62 +81,37 @@ public class UserATMController {
 
     }
 
-
-
-//    @PostMapping("/withdraw")
-//    public ResponseEntity withdraw(@RequestParam String username,
-//                                            @RequestParam Long accountId,
-//                                            @RequestParam Integer value) {
-//
-//        User user = userService.findUserByUsername(username);
-//        Account acc = accountService.findAccountById(accountId);
-//
-//        if(user.isAdmin()){
-//            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-//        }
-//
-//        if(!acc.isMyOwner(user)){
-//            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-//        }
-//
-//        if(!acc.enoughSold(value)){
-//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Insufficent funds");
-//        }
-//
-//        Receipt rcp = atm.withDraw(value);
-//
-//        if(rcp == null){
-//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Technical Difficulties");
-//        }
-//
-//        acc.updateSold(value, TransactionType.TRANSACTION_WITHDRAW);
-//        acc.addNewTransaction(rcp);
-//        if(value >= 200){
-//
-//        }
-//
-//        return new ResponseEntity<>(rcp, HttpStatus.OK);
-//
-////    }
-
     @PostMapping("/withdraw")
     public ResponseEntity withdraw(@RequestParam String username,
                                    @RequestParam Long accountId,
-                                   @RequestParam Integer value) {
+                                   @RequestParam Integer value){
 
         User user = userService.findUserByUsername(username);
         Account acc = accountService.findAccountById(accountId);
+        Money money;
 
         if(user.isAdmin()){
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
+        if(acc.getSold() < value){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Insufficient funds, Check Acc Balance");
+        }
 
         Drawer drawer = drawerService.getDrawer(1L);
 
-        Money money = drawer.withdraw(acc.getCurrency(), value);
+        try{
+            money = drawer.withdraw(acc.getCurrency(), value);
+        } catch (NotEnoughMoney notEnoughMoney) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Not Enough Money in ATM");
+        } catch (NotEnoughPennies notEnoughPennies) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Not Enough Pennies, enter a rounded sum");
+        } catch (RunOutOfMoney runOutOfMoney) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Run Out Of Money");
+        }
 
         drawerService.save(drawer);
-        return ResponseEntity.status(HttpStatus.OK).body(money);
+        MoneyDTO moneyDTO = modelMapper.map(money, MoneyDTO.class);
+        return ResponseEntity.status(HttpStatus.OK).body(moneyDTO);
 
     }
 
@@ -139,21 +120,33 @@ public class UserATMController {
                                      @RequestParam Long accountId,
                                      @RequestBody MoneyDTO moneyDTO){
 
+
         User user = userService.findUserByUsername(username);
         Account acc = accountService.findAccountById(accountId);
         Money money = modelMapper.map(moneyDTO, Money.class);
+        Drawer drawer = drawerService.getDrawer(1L);
+        String pattern = Arrays.stream(BnkNamePattern.values())
+                               .filter(n->n.getCurrency() == acc.getCurrency())
+                               .findFirst().get().getPattern();
+        List<Banknotes> atmNotes = notesService.findNotesByTypeLike(pattern).stream().map(n->n.getType()).collect(Collectors.toList());
+        System.out.println(atmNotes);
 
         if(user.isAdmin()){
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("You have no permission");
         }
-        System.out.println(money.getCurrency());
+
         if(money.getCurrency() != acc.getCurrency()){
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Coaie, nu amesteci euro cu lei");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Coaie, nu amesteci euro cu lei");
+        }
+
+        if(!drawer.checkMoney(atmNotes, money)){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("You had introduced wrong note/s");
         }
 
         acc.setSold(acc.getSold() + money.getTotalAmount());
         accountService.save(acc);
-        return ResponseEntity.status(HttpStatus.OK).body(acc);
+        AccountDTO accountDTO = modelMapper.map(acc, AccountDTO.class);
+        return ResponseEntity.status(HttpStatus.OK).body(accountDTO);
     }
 
 }

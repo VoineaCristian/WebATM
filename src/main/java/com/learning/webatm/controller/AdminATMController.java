@@ -59,8 +59,7 @@ public class AdminATMController {
 
         drawer.addMoney(money.getCurrency(), money.getStacks());
         drawerService.save(drawer);
-
-        return ResponseEntity.status(HttpStatus.OK).body(drawer);
+        return ResponseEntity.status(HttpStatus.OK).body(moneyDTO);
 
     }
 
