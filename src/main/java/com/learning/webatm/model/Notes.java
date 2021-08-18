@@ -4,6 +4,7 @@ import com.learning.webatm.enums.Banknotes;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 public class Notes {
@@ -21,6 +22,25 @@ public class Notes {
 
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Notes notes = (Notes) o;
+        return type == notes.type && Objects.equals(value, notes.value);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(type, value);
+    }
+
+    public Notes(Banknotes bnk) {
+        this.type = bnk;
+    }
+
+
+
     public Banknotes getType() {
         return type;
 
@@ -36,7 +56,6 @@ public class Notes {
     }
 
     public Integer getValue() {
-        System.out.println(value);
         return value;
     }
 

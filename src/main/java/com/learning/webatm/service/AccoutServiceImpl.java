@@ -28,4 +28,8 @@ public class AccoutServiceImpl implements AccountService {
     public Account save(Account account){
         return accountRepo.save(account);
     }
+
+    @Override
+    public void deleteAccount(Account account) { accountRepo.delete(account);}
+
 }

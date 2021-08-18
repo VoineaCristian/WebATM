@@ -4,6 +4,7 @@ import com.learning.webatm.enums.Currency;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 public class Stacks implements Comparable<Stacks> {
@@ -17,6 +18,19 @@ public class Stacks implements Comparable<Stacks> {
     @Column(name = "count")
     private Integer count;
 
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Stacks stacks = (Stacks) o;
+        return Objects.equals(notes, stacks.notes) && Objects.equals(count, stacks.count);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, notes, count);
+    }
 
     public Stacks() {
     }
@@ -53,14 +67,19 @@ public class Stacks implements Comparable<Stacks> {
 
     @Override
     public int compareTo(Stacks s) {
-        return this.notes.getValue()-s.notes.getValue();
+        return s.notes.getValue()-this.notes.getValue();
     }
 
     public int totalAmount(){
         return this.count * this.getNotes().getValue();
     }
 
-
-
-
+    @Override
+    public String toString() {
+        return "Stacks{" +
+                "id=" + id +
+                ", notes=" + notes +
+                ", count=" + count +
+                '}';
+    }
 }

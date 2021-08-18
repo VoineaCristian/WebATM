@@ -59,7 +59,6 @@ public class Drawer {
 
         if (getStacks == null) {
             this.moneys.add(new Money(currency, stacks));
-            System.out.println("e null");
         } else getStacks.addStacks(stacks);
 
         return getStacks;
@@ -77,9 +76,9 @@ public class Drawer {
         for (Stacks stack : stacks) {
             int nrOfBills = amount / stack.getNotes().getValue();
             nrOfBills = Math.min(nrOfBills, stack.getCount());
-            dueStacks.add(new Stacks(stack.getNotes(), nrOfBills));
-
-            System.out.println(dueStacks);
+            if(nrOfBills != 0)
+                dueStacks.add(new Stacks(stack.getNotes(), nrOfBills));
+            System.out.println(amount + " ---" + stack.getNotes() + " ===" + nrOfBills);
             amount -= nrOfBills * stack.getNotes().getValue();
             stack.setCount(stack.getCount() - nrOfBills);
         }

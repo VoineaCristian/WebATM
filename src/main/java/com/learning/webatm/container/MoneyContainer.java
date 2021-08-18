@@ -9,6 +9,9 @@ public class MoneyContainer {
     private List<MoneyDTO> moneys;
     private Integer numberOfElements;
 
+    public MoneyContainer() {
+    }
+
     public MoneyContainer(List<MoneyDTO> moneys) {
         this.moneys = moneys;
         this.numberOfElements = moneys.size();
@@ -29,4 +32,5 @@ public class MoneyContainer {
     public void setNumberOfElements(Integer numberOfElements) {
         this.numberOfElements = numberOfElements;
     }
+
 }

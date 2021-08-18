@@ -20,15 +20,26 @@ public class User {
     private UserRole role;
     @Column(name="phone_number", unique = true)
     private String phoneNumber;
-
+    @Column(name="password")
+    private String password;
     public User() {
     }
 
-    public User(Long id, String username, UserRole role, String phoneNumber) {
+
+    public User(Long id, String username, UserRole role, String phoneNumber, String password) {
         this.id = id;
         this.username = username;
         this.role = role;
         this.phoneNumber = phoneNumber;
+        this.password = password;
+    }
+
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+    public String getPassword() {
+        return password;
     }
 
     public Long getId() {
@@ -70,10 +81,11 @@ public class User {
     @Override
     public String toString() {
         return "User{" +
-                "Id=" + id +
+                "id=" + id +
                 ", username='" + username + '\'' +
                 ", role=" + role +
-                ", accounts=" +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", password='" + password + '\'' +
                 '}';
     }
 }

@@ -5,6 +5,7 @@ import com.learning.webatm.enums.Currency;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 
 @Entity
@@ -20,6 +21,19 @@ public class Money {
 
     @OneToMany(cascade = {CascadeType.ALL})
     private List<Stacks> stacks;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Money money = (Money) o;
+        return currency == money.currency && Objects.equals(stacks, money.stacks);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(currency, stacks);
+    }
 
     public Money() {
 
@@ -68,7 +82,6 @@ public class Money {
 
 
     public Stacks getStackByValue(Stacks s){
-        System.out.println("----" + s.getNotes().getValue());
         return this.getStacks().stream()
                         .filter(stack->stack.getNotes().getType()==s.getNotes().getType())
                         .findFirst()
@@ -77,7 +90,6 @@ public class Money {
 
     public void fill(Stacks s){
         Stacks existingStacks = this.getStackByValue(s);
-        System.out.println(existingStacks);
         if(existingStacks == null){
             this.stacks.add(s);
         } else {

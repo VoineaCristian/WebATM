@@ -1,13 +1,8 @@
 package com.learning.webatm.dto;
 
 import com.learning.webatm.enums.Currency;
-import com.learning.webatm.model.Stacks;
 import org.modelmapper.TypeToken;
 
-import javax.persistence.CascadeType;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.OneToMany;
 import java.lang.reflect.Type;
 import java.util.List;
 
@@ -15,8 +10,8 @@ public class MoneyDTO {
 
     private Currency currency;
     private List<StacksDTO> stacks;
-    TypeToken<List<MoneyDTO>> typeToken = new TypeToken<>() {
-    };
+
+
     public MoneyDTO() {
     }
 
@@ -48,4 +43,12 @@ public class MoneyDTO {
          typeToken = new TypeToken<>(){};
         return typeToken.getType();
      }
+
+    @Override
+    public String toString() {
+        return "MoneyDTO{" +
+                "currency=" + currency +
+                ", stacks=" + stacks +
+                '}';
+    }
 }
